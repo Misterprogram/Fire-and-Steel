@@ -11,12 +11,16 @@ public class Playercontrole : MonoBehaviour
     private CapsuleCollider playerCollider;
     private float originalColliderHeight;
     private Vector3 originalColliderCenter;
+    public float runSpeed = 10f;
+    private float currentSpeed;
+    private Renderer playerRenderer;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         playerCollider = GetComponent<CapsuleCollider>();
-
+        playerRenderer = GetComponentInChildren<Renderer>();
+        playerRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         originalColliderHeight = playerCollider.height;
         originalColliderCenter = playerCollider.center;
     }
@@ -26,8 +30,17 @@ public class Playercontrole : MonoBehaviour
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
 
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical) * speed * Time.deltaTime;
+        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical) * currentSpeed * Time.deltaTime;
         transform.Translate(movement, Space.Self);
+
+        if (Input.GetKey(KeyCode.LeftShift) && !(Input.GetKey(KeyCode.LeftControl)))
+        {
+            currentSpeed = runSpeed;
+        }
+        else
+        {
+            currentSpeed = speed;
+        }
 
         if (Input.GetKey(KeyCode.Space) && isGround )
         {
